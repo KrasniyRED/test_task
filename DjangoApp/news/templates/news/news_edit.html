@@ -1,0 +1,7 @@
+<h1>{% if form.instance.pk %}Редактировать новость{% else %}Добавить новость{% endif %}</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+<a href="{% url 'news_list' %}">Назад к списку</a>

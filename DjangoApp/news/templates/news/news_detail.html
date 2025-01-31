@@ -1,0 +1,7 @@
+<h1>{{ news.title }}</h1>
+<img src="{{ news.main_image.url }}" alt="{{ news.title }}">
+<img src="{{ news.preview_image.url }}" alt="Превью {{ news.title }}">
+<p>{{ news.content }}</p>
+<p>Дата публикации: {{ news.publication_date }}</p>
+<p>Автор: {{ news.author.username }}</p>
+<a href="{% url 'news_list' %}">Назад к списку</a>

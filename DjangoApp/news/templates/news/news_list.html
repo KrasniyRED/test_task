@@ -1,0 +1,11 @@
+<h1>Новости</h1>
+<a href="{% url 'news_create' %}">Добавить новость</a>
+<ul>
+    {% for item in news %}
+        <li>
+            <a href="{% url 'news_detail' pk=item.pk %}">{{ item.title }}</a>
+            <a href="{% url 'news_edit' pk=item.pk %}">Редактировать</a>
+            <a href="{% url 'news_delete' pk=item.pk %}">Удалить</a>
+        </li>
+    {% endfor %}
+</ul>
