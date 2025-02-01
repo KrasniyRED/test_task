@@ -27,7 +27,7 @@ class News(models.Model):
             width, height = img.size
             min_side = min(width, height)
             new_size = (200, 200) if min_side >= 200 else (min_side, min_side)
-            img.thumbnail(new_size, Image.ANTIALIAS)
+            img.thumbnail(new_size, Image.LANCZOS)
 
             output = BytesIO()
             img.save(output, format='JPEG', quality=90)

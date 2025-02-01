@@ -3,6 +3,11 @@ from .models import News
 from .forms import NewsForm
 from django.contrib.auth.decorators import login_required
 
+#Отображение новостей на главной
+def home(request):
+    news = News.objects.all().order_by('-publication_date')
+    return render(request, 'news/home.html', {'news': news})
+
 # @login_required
 def news_list(request):
     news = News.objects.all()
