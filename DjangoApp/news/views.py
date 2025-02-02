@@ -1,24 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import News
 from .forms import NewsForm
-from django.contrib.auth.decorators import login_required
 
-#Отображение новостей на главной
 def home(request):
     news = News.objects.all().order_by('-publication_date')
     return render(request, 'news/home.html', {'news': news})
 
-# @login_required
 def news_list(request):
     news = News.objects.all()
     return render(request, 'news/news_list.html', {'news': news})
 
-# @login_required
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)
     return render(request, 'news/news_detail.html', {'news': news})
 
-# @login_required
 def news_create(request):
     if request.method == "POST":
         form = NewsForm(request.POST, request.FILES)
@@ -31,7 +26,6 @@ def news_create(request):
         form = NewsForm()
     return render(request, 'news/news_edit.html', {'form': form})
 
-# @login_required
 def news_edit(request, pk):
     news = get_object_or_404(News, pk=pk)
     if request.method == "POST":
@@ -45,7 +39,6 @@ def news_edit(request, pk):
         form = NewsForm(instance=news)
     return render(request, 'news/news_edit.html', {'form': form})
 
-# @login_required
 def news_delete(request, pk):
     news = get_object_or_404(News, pk=pk)
     news.delete()

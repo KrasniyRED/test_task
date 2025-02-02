@@ -5,6 +5,8 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+import json
 
 class News(models.Model):
     
@@ -37,7 +39,6 @@ class News(models.Model):
                 output, 'ImageField', f"{self.main_image.name.split('.')[0]}_preview.jpg",
                 'image/jpeg', sys.getsizeof(output), None
             )
-
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -46,3 +47,41 @@ class News(models.Model):
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
+
+class EmailTask(models.Model):
+    recipients = models.TextField(help_text="Список адресатов (через запятую)")
+    subject = models.CharField(max_length=255, help_text="Тема сообщения")
+    message = models.TextField(help_text="Текст сообщения")
+    send_at = models.DateTimeField(help_text="Время отправки")
+    periodic_task = models.OneToOneField(
+        PeriodicTask, on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"EmailTask: {self.subject}"
+
+    def save(self, *args, **kwargs):
+        if not self.periodic_task:
+            # Установка интервала
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                every=24, period=IntervalSchedule.HOURS
+            )
+
+            self.periodic_task = PeriodicTask.objects.create(
+                interval=schedule,
+                name=f"EmailTask: {self.subject}",
+                task="news.tasks.send_custom_email",
+                args=json.dumps([self.id]),
+                start_time=self.send_at,
+            )
+        else:
+            # Обновление время отправки, если оно изменилось
+            self.periodic_task.start_time = self.send_at
+            self.periodic_task.save()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.periodic_task:
+            self.periodic_task.delete()
+        super().delete(*args, **kwargs)
