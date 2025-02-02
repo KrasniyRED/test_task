@@ -146,5 +146,5 @@ EMAIL_HOST = 'smtp.mail.ru'  #SMTP-сервер
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'freginder@mail.ru'
-EMAIL_HOST_PASSWORD = 'xPOrR2aRot3+'
+EMAIL_HOST_PASSWORD = '464dQhkjN2CZzbgix4cC'
 DEFAULT_FROM_EMAIL = 'freginder@mail.ru'
