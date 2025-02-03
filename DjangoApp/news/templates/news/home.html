@@ -13,7 +13,7 @@
                 <li>
                     <h2>{{ item.title }}</h2>
                     <img src="{{ item.preview_image.url }}" alt="Превью {{ item.title }}">
-                    <p>{{ item.content|truncatewords:30 }}</p>  <!-- Обрезаем текст до 30 слов -->
+                    <p>{{ item.content|truncatewords:30 | safe }}</p>  <!-- Обрезаем текст до 30 слов -->
                     <p>Дата публикации: {{ item.publication_date }}</p>
                     <p>Автор: {{ item.author.username }}</p>
                 </li>
