@@ -8,21 +8,39 @@ import sys
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 import json
 
+
 class News(models.Model):
-    
-    title = models.CharField(max_length=200, verbose_name="Заголовок новости")
-    
-    main_image = models.ImageField(upload_to='news_images/', verbose_name="Главное изображение")
-    
-    preview_image = models.ImageField(upload_to='news_previews/',blank=True,null=True, verbose_name="Превью")
+    title = models.CharField(max_length=200, verbose_name='Заголовок новости')
 
-    content = models.TextField(verbose_name="Текст новости")
-    
-    publication_date = models.DateTimeField(default=timezone.now, verbose_name="Дата публикации")
-    
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор новости")
+    main_image = models.ImageField(
+        upload_to='news_images/', verbose_name='Главное изображение'
+    )
 
-    def save(self, *args, **kwargs):
+    preview_image = models.ImageField(
+        upload_to='news_previews/',
+        blank=True,
+        null=True,
+        verbose_name='Превью',
+    )
+
+    content = models.TextField(verbose_name='Текст новости')
+
+    publication_date = models.DateTimeField(
+        default=timezone.now, verbose_name='Дата публикации'
+    )
+
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name='Автор новости'
+    )
+
+    class Meta:
+        verbose_name = 'Новость'
+        verbose_name_plural = 'Новости'
+
+    def __str__(self) -> str:
+        return self.title
+
+    def save(self, *args, **kwargs) -> None:
         # Создание превью-изображения
         if self.main_image:
             img = Image.open(self.main_image)
@@ -36,31 +54,29 @@ class News(models.Model):
             output.seek(0)
 
             self.preview_image = InMemoryUploadedFile(
-                output, 'ImageField', f"{self.main_image.name.split('.')[0]}_preview.jpg",
-                'image/jpeg', sys.getsizeof(output), None
+                output,
+                'ImageField',
+                f'{self.main_image.name.split(".")[0]}_preview.jpg',
+                'image/jpeg',
+                sys.getsizeof(output),
+                None,
             )
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = "Новость"
-        verbose_name_plural = "Новости"
 
 class EmailTask(models.Model):
-    recipients = models.TextField(help_text="Список адресатов (через запятую)")
-    subject = models.CharField(max_length=255, help_text="Тема сообщения")
-    message = models.TextField(help_text="Текст сообщения")
-    send_at = models.DateTimeField(help_text="Время отправки")
+    recipients = models.TextField(help_text='Список адресатов (через запятую)')
+    subject = models.CharField(max_length=255, help_text='Тема сообщения')
+    message = models.TextField(help_text='Текст сообщения')
+    send_at = models.DateTimeField(help_text='Время отправки')
     periodic_task = models.OneToOneField(
         PeriodicTask, on_delete=models.CASCADE, null=True, blank=True
     )
 
-    def __str__(self):
-        return f"EmailTask: {self.subject}"
+    def __str__(self) -> str:
+        return f'EmailTask: {self.subject}'
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.periodic_task:
             # Установка интервала
             schedule, _ = IntervalSchedule.objects.get_or_create(
@@ -69,8 +85,8 @@ class EmailTask(models.Model):
 
             self.periodic_task = PeriodicTask.objects.create(
                 interval=schedule,
-                name=f"EmailTask: {self.subject}",
-                task="news.tasks.send_custom_email",
+                name=f'EmailTask: {self.subject}',
+                task='news.tasks.send_custom_email',
                 args=json.dumps([self.id]),
                 start_time=self.send_at,
             )
@@ -81,7 +97,7 @@ class EmailTask(models.Model):
 
         super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs) -> None:
         if self.periodic_task:
             self.periodic_task.delete()
         super().delete(*args, **kwargs)

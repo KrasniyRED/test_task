@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('django_celery_beat', '0019_alter_periodictasks_options'),
         ('news', '0001_initial'),
@@ -15,12 +14,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EmailTask',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipients', models.TextField(help_text='Список адресатов (через запятую)')),
-                ('subject', models.CharField(help_text='Тема сообщения', max_length=255)),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'recipients',
+                    models.TextField(
+                        help_text='Список адресатов (через запятую)'
+                    ),
+                ),
+                (
+                    'subject',
+                    models.CharField(
+                        help_text='Тема сообщения', max_length=255
+                    ),
+                ),
                 ('message', models.TextField(help_text='Текст сообщения')),
                 ('send_at', models.DateTimeField(help_text='Время отправки')),
-                ('periodic_task', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='django_celery_beat.periodictask')),
+                (
+                    'periodic_task',
+                    models.OneToOneField(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='django_celery_beat.periodictask',
+                    ),
+                ),
             ],
         ),
     ]

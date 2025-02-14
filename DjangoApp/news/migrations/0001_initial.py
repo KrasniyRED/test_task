@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -18,13 +17,53 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='News',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='Заголовок новости')),
-                ('main_image', models.ImageField(upload_to='news_images/', verbose_name='Главное изображение')),
-                ('preview_image', models.ImageField(blank=True, null=True, upload_to='news_previews/', verbose_name='Превью')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'title',
+                    models.CharField(
+                        max_length=200, verbose_name='Заголовок новости'
+                    ),
+                ),
+                (
+                    'main_image',
+                    models.ImageField(
+                        upload_to='news_images/',
+                        verbose_name='Главное изображение',
+                    ),
+                ),
+                (
+                    'preview_image',
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to='news_previews/',
+                        verbose_name='Превью',
+                    ),
+                ),
                 ('content', models.TextField(verbose_name='Текст новости')),
-                ('publication_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Дата публикации')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Автор новости')),
+                (
+                    'publication_date',
+                    models.DateTimeField(
+                        default=django.utils.timezone.now,
+                        verbose_name='Дата публикации',
+                    ),
+                ),
+                (
+                    'author',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Автор новости',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Новость',
