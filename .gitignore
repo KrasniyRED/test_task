@@ -1,4 +1,5 @@
 ### Django ###
+.venv
 *.log
 *.pot
 *.pyc
@@ -6,4 +7,8 @@ __pycache__/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media
+DjangoApp/data/
+DjangoApp/.ruff_cache/
+DjangoApp/media/
+DjangoApp/db.sqlite3
+DjangoApp/.env
