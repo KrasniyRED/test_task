@@ -13,7 +13,10 @@ class News(models.Model):
     title = models.CharField(max_length=200, verbose_name='Заголовок новости')
 
     main_image = models.ImageField(
-        upload_to='news_images/', verbose_name='Главное изображение'
+        upload_to='news_images/',
+        blank=True,
+        null=True,
+        verbose_name='Главное изображение',
     )
 
     preview_image = models.ImageField(
@@ -30,7 +33,11 @@ class News(models.Model):
     )
 
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор новости'
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор новости',
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -101,3 +108,22 @@ class EmailTask(models.Model):
         if self.periodic_task:
             self.periodic_task.delete()
         super().delete(*args, **kwargs)
+
+class Comments(models.Model):
+    
+    content = models.TextField(max_length=200)
+    
+    related_news = models.ForeignKey(
+        News,
+        on_delete=models.CASCADE,
+        verbose_name='Источник',
+        )
+    
+    class Meta:
+        verbose_name = 'Новость'
+        verbose_name_plural = 'Новости'
+
+    def __str__(self) -> str:
+        return self.content
+    
+    

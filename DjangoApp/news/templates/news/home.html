@@ -12,7 +12,7 @@
             <a href="{% url 'news_detail' pk=item.pk %}">
                 <li>
                     <h2>{{ item.title }}</h2>
-                    <img src="{{ item.preview_image.url }}" alt="Превью {{ item.title }}">
+                    {% comment %} <img src="{{ item.preview_image.url}}" alt="Превью {{ item.title }}"> {% endcomment %}
                     <p>{{ item.content|truncatewords:30 | safe }}</p>  <!-- Обрезаем текст до 30 слов -->
                     <p>Дата публикации: {{ item.publication_date }}</p>
                     <p>Автор: {{ item.author.username }}</p>
