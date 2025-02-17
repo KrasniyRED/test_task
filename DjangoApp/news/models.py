@@ -109,21 +109,21 @@ class EmailTask(models.Model):
             self.periodic_task.delete()
         super().delete(*args, **kwargs)
 
-class Comments(models.Model):
+# class Comments(models.Model):
     
-    content = models.TextField(max_length=200)
+#     content = models.TextField(max_length=200)
     
-    related_news = models.ForeignKey(
-        News,
-        on_delete=models.CASCADE,
-        verbose_name='Источник',
-        )
+#     related_news = models.ForeignKey(
+#         News,
+#         on_delete=models.CASCADE,
+#         verbose_name='Источник',
+#         )
     
-    class Meta:
-        verbose_name = 'Новость'
-        verbose_name_plural = 'Новости'
+#     class Meta:
+#         verbose_name = 'Новость'
+#         verbose_name_plural = 'Новости'
 
-    def __str__(self) -> str:
-        return self.content
+#     def __str__(self) -> str:
+#         return self.content
     
     
