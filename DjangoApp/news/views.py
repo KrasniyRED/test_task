@@ -2,8 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import News, Comments
 from .serializers import NewsSerializer, CommentSerializer
 from django.http import HttpRequest, HttpResponse
-from rest_framework import generics, request, response
-
+from rest_framework import generics, request, response, status
 
 class GenericNewsView(generics.GenericAPIView):
     queryset = News.objects.all().order_by('-publication_date')
@@ -17,7 +16,7 @@ class GenericNewsView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return response.Response()
+        return response.Response(status.HTTP_201_CREATED)
 
     def patch(
         self, request: request.Request, *args, **kwargs
@@ -53,25 +52,21 @@ class GenericCommentsView(generics.GenericAPIView):
         serializer: CommentSerializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return response.Response(request.data)
+        return response.Response(status.HTTP_201_CREATED)
 
     def patch(
         self, request: request.Request, comment_pk: int, *args, **kwargs
     ) -> response.Response:
-        instance = Comments.objects.get(
-            id=comment_pk, related_news=kwargs['pk']
-        )
+        instance = get_object_or_404(Comments, id=comment_pk, related_news=kwargs['pk'])
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return response.Response()
+        return response.Response(serializer.data)
 
     def delete(
         self, request: request.Request, comment_pk: int, *args, **kwargs
     ) -> response.Response:
-        instance = Comments.objects.get(
-            id=comment_pk, related_news=kwargs['pk']
-        )
+        instance = get_object_or_404(Comments, id=comment_pk, related_news=kwargs['pk'])
         instance.delete()
         return response.Response()
 
