@@ -16,7 +16,7 @@ class GenericNewsView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return response.Response(status.HTTP_201_CREATED)
+        return response.Response(status=status.HTTP_201_CREATED)
 
     def patch(
         self, request: request.Request, *args, **kwargs
@@ -32,7 +32,7 @@ class GenericNewsView(generics.GenericAPIView):
     ) -> response.Response:
         instance: News = self.get_object()
         instance.delete()
-        return response.Response()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class GenericCommentsView(generics.GenericAPIView):
@@ -52,7 +52,7 @@ class GenericCommentsView(generics.GenericAPIView):
         serializer: CommentSerializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return response.Response(status.HTTP_201_CREATED)
+        return response.Response(status=status.HTTP_201_CREATED)
 
     def patch(
         self, request: request.Request, comment_pk: int, *args, **kwargs
@@ -68,7 +68,7 @@ class GenericCommentsView(generics.GenericAPIView):
     ) -> response.Response:
         instance = get_object_or_404(Comments, id=comment_pk, related_news=kwargs['pk'])
         instance.delete()
-        return response.Response()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def home(request: HttpRequest) -> HttpResponse:
